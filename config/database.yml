@@ -1,0 +1,13 @@
+development:
+  adapter: mysql2
+  database: mywmg_rob_development
+  username: rob_dev
+  password: pepper
+  host: mysql.wmg-dta.com
+
+production:
+  adapter: mysql2
+  database: grid_site_production
+  username: grid_app
+  password: gr1ds1t3
+  host: mysql.wmg-dta.com

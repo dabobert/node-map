@@ -1,0 +1,16 @@
+development:
+  server: 10.80.69.28
+  port: 7474
+  path: /db/data
+
+
+staging:
+  server: 10.80.69.28
+  port: 7474
+  path: /db/data
+  
+
+production:
+  server: 10.80.69.28
+  port: 7474
+  path: /db/data
