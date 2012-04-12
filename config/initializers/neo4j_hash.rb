@@ -12,7 +12,9 @@ class Hash
   end
   
   
-  def node(id)
+  
+  
+  def url(id)
     case self.direction(id)
     when "in"
       self["start"]
@@ -21,6 +23,10 @@ class Hash
     else
       self["end"]
     end
+  end
+  
+  def node(id)
+    self.url(id).match(/\/(\d+)$/)[1]
   end
   
 end

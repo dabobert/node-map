@@ -12,7 +12,7 @@ class Node
         node = Kernel.const_get(data["type"].camelcase).new(:id=>id, :data=>data)
       rescue
         node = Node.new(:id=>id, :data=>data)
-      end  
+      end
       node
     end
   
@@ -35,21 +35,28 @@ class Node
     JSON.parse(Node.get("/node/#{self.id}/relationships/all").body)
   end
   
-  def origin
-    #hash          = self.related
-    #hash[:origin] = self.data
-    #hash
-    {
-      :origin => self.data,
-    }.merge()
+  
+  def response(depth=0)
+    self.data.merge(self.related(depth))
+  end
+    
+    
+    
+  def origin(depth=0)
+    {:origin => self.data}.merge(self.related(depth))
   end
   
-  def related
+  def related(depth=0)
     @related = Hash.new
     self.relationships.each do |relationship|
+      next if relationship.direction(self.id) == "in"
       clean = relationship["type"].gsub(" ", "_")
-      @related[clean] ||= Array.new 
-      @related[clean] << relationship.node(self.id)
+      @related[clean] ||= Array.new
+      if depth > 0
+        @related[clean] << Node.find(relationship.node(self.id)).response(depth-1)
+      else
+        @related[clean] << relationship.url(self.id)
+      end
     end
     @related
   end
