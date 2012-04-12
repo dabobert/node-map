@@ -26,7 +26,7 @@ class Hash
   end
   
   def node(id)
-    self.url(id).match(/\/(\d+)$/)[1]
+    self.url(id).match(/\/(\d+)$/)[1].to_i
   end
   
 end

@@ -36,24 +36,27 @@ class Node
   end
   
   
-  def response(depth=0)
-    self.data.merge(self.related(depth))
+  def response(depth=0, traversed=[])
+    self.data.merge(self.related(depth, traversed))
   end
     
     
     
-  def origin(depth=0)
+  def origin(depth=2)
     {:origin => self.data}.merge(self.related(depth))
   end
   
-  def related(depth=0)
+  def related(depth=0, traversed=[])
+    puts "#{traversed.inspect}=>#{self.id}"
     @related = Hash.new
     self.relationships.each do |relationship|
-      next if relationship.direction(self.id) == "in"
+      #puts "\n#{relationship.inspect}\n"
+      next if traversed.include? relationship.node(self.id)
+      #next if relationship.direction(self.id) == "in"
       clean = relationship["type"].gsub(" ", "_")
       @related[clean] ||= Array.new
       if depth > 0
-        @related[clean] << Node.find(relationship.node(self.id)).response(depth-1)
+        @related[clean] << Node.find(relationship.node(self.id)).response(depth-1, (traversed<<self.id).uniq)
       else
         @related[clean] << relationship.url(self.id)
       end
@@ -64,8 +67,8 @@ class Node
   def initialize(hash={})
     self.data ||= Hash.new
     if hash.has_key?(:id)
-      self.data["id"] = hash[:id]
-      self.id = hash[:id]
+      self.data["id"] = hash[:id].to_i
+      self.id = hash[:id].to_i
       self.rels = Node.relationships(id).collect do |relationship|
         {:direction=>relationship.direction(self.id), :type=>relationship["type"], :node=>relationship.node(self.id)}
       end
