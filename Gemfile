@@ -8,6 +8,8 @@ gem 'rails', '3.2.2'
 gem "mysql2", "~> 0.3.11"
 gem 'json'
 gem "httparty"
+gem 'sequel'
+gem 'roo'
 #gem "bson_ext"
 
 group :development, :test do
